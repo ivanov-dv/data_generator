@@ -27,7 +27,7 @@ class PersonGenerator(IGenerator):
             cls.person.height(),
             cls.person.nationality()
         )
-
+    # Обоснуй за классметод -иначе не принимается
     @classmethod
     def generate_random_to_generator(cls, number_of_lines: int) -> Generator:
         """
@@ -62,7 +62,7 @@ class PersonGenerator(IGenerator):
         :param number_of_lines: Количество строк.
         :return: Список из множества строк(кортежей) случайных данных.
         """
-
+        # Извращенец - зачем внутри функции  однострочник - тебе строк жалко?
         result = [
             (
                 cls.person.first_name(),
@@ -78,4 +78,5 @@ class PersonGenerator(IGenerator):
             )
             for _ in range(number_of_lines)
         ]
+        # А чего тут не сэкономил?
         return result

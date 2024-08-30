@@ -5,6 +5,7 @@ from engine import terminal
 
 
 def main():
+    # сделай списком
     if not os.path.exists(INPUT_DIR):
         os.mkdir(INPUT_DIR)
     if not os.path.exists(OUTPUT_DIR):

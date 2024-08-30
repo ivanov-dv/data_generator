@@ -2,6 +2,7 @@ import enum
 
 
 class FileFormat(enum.Enum):
+    # Тут и везде - изврат - что за числа?
     XLSX = '1'
     CSV = '2'
     TXT = '3'

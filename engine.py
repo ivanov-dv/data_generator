@@ -8,6 +8,11 @@ packer_zip = PackerZip()
 packer_7z = Packer7z()
 file_creator = FileCreator()
 
-terminal = Terminal(person_generator=person_generator, packer_zip=packer_zip, packer_7z=packer_7z,
-                    file_creator=file_creator)
+# Лучше использовать стиль такой - проще читать и править
+terminal = Terminal(
+    person_generator=person_generator,
+    packer_zip=packer_zip,
+    packer_7z=packer_7z,
+    file_creator=file_creator
+)
 

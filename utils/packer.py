@@ -42,7 +42,7 @@ class PackerZip(IPacker):
                 if delete_after:
                     os.remove(f'{source_dir}/{file_path}')
 
-
+# В каждой функции одни и те же данные начальные - можно думаю сократить колчество описаний как то
 class Packer7z(IPacker):
     @staticmethod
     def _create_partition_from_buffer(buffer: io.BytesIO, archive_filename: str, inner_filename: str,
@@ -55,7 +55,7 @@ class Packer7z(IPacker):
         :param inner_filename: Имя вложенного файла с расширением.
         :param max_size_mb: Максимальный размер тома архива, в байтах.
         """
-
+        # Читер - слишком легко - пиши через буфферы
         with multivolumefile.open(
                 f'{archive_filename}', mode='wb', volume=max_size_mb * 1024 * 1024
         ) as target_archive:

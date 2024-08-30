@@ -7,7 +7,9 @@ from typing import Generator
 from config import TXT_ENCODING, CSV_ENCODING, OUTPUT_DIR
 from utils.entities import IFileCreator
 
-
+# Если тут будет 50 разных ипов -этот файл будет содержать 50 методов?
+# Не сликшом ли сложно + представь чо нужно в название файла добавлять цифру 123 для одного случая и цифру 2345 для другого?
+# ТАкже есть повторяющийся код - это не драй
 class FileCreator(IFileCreator):
     @staticmethod
     def create_excel(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
@@ -22,6 +24,8 @@ class FileCreator(IFileCreator):
         output = f'{OUTPUT_DIR}/{file_name}' if file_name else io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
         worksheet = workbook.add_worksheet()
+
+        # магические числа
 
         row = 0
         for record in data:

@@ -8,7 +8,7 @@ from config import INPUT_DIR, OUTPUT_DIR, OUTPUT_FILENAME, logger
 from utils.entities import IGenerator, IPacker, IFileCreator
 from utils.models import FileFormat, PackerFormat, WorkFormat, PackerType
 
-
+# Это не терминал, этр ТЕРМИНАЛИЩЕ - сделай адекватно и читаемо - наследование/инкапсуляция/полиморфизм
 class Terminal:
     def __init__(self, person_generator: IGenerator, packer_zip: IPacker, packer_7z: IPacker,
                  file_creator: IFileCreator):
@@ -76,6 +76,7 @@ class Terminal:
         :param data: Объект генератора или список.
         """
         file_format = self.config_data['file_format']
+        #  одинаковые вызовы - сделай один - если их будет 50 будет неподдерживаемо
         if file_format == FileFormat.XLSX:
             buffer = self.file_creator.create_excel(data)
             self.packer_zip.create_from_buffer(buffer, archive_filename=f'{OUTPUT_FILENAME}.zip',
@@ -95,10 +96,11 @@ class Terminal:
 
         :param data: Объект генератора или список.
         """
-
+        # ХАРДКООООД + не DRY - исправит  -  тупо нечитаемая стена кода
         file_format = self.config_data['file_format']
         if file_format == FileFormat.XLSX:
             buffer = self.file_creator.create_excel(data)
+
             if self.config_data['packer_type'] == PackerType.ONE_FILE:
                 self.packer_7z.create_from_buffer(buffer, archive_filename=f'{OUTPUT_FILENAME}.7z',
                                                   inner_filename=f'{OUTPUT_FILENAME}.xlsx')
@@ -132,7 +134,7 @@ class Terminal:
         """
         Приветственное сообщение программы.
         """
-
+        #  Принт? реали?
         print(
             'Welcome to the Packer!\n'
             'Программа для генерации случайных данных пользователя.\n'
@@ -277,7 +279,7 @@ class Terminal:
             self.get_max_size_mb()
 
     # 2 варианта генерации для сравнения скорости - генератор и списковые включения.
-    # Генератор оказался чуть быстрее и занимает меньше оперативной памяти.
+    # Генератор оказался чуть быстрее и занимает меньше оперативной памяти. - это ок
     def generate_data_to_generator(self) -> Generator:
         """
         Создание объекта генератора случайных данных.
@@ -354,6 +356,7 @@ class Terminal:
         Старт программы с интерфейсом в терминале.
         """
         try:
+            #  эти if else меня убивают
             work_format = self.get_work_format()
             if work_format == WorkFormat.GENERATOR:
                 self.get_generator_parameters()

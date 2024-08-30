@@ -2,7 +2,7 @@ import abc
 import io
 
 from typing import Generator
-
+# ВСе в одном файле - плохо
 
 class IGenerator(abc.ABC):
     """
