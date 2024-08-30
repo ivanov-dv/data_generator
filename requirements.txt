@@ -1,0 +1,5 @@
+multivolumefile~=0.2.3
+py7zr~=0.22.0
+mimesis~=17.0.0
+XlsxWriter~=3.2.0
+loguru~=0.7.2
