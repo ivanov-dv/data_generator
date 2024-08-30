@@ -16,7 +16,7 @@ class FileCreator(IFileCreator):
 
         :param data: Данные
         :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return:
+        :return: Объект io.BytesIO или None
         """
 
         output = f'{OUTPUT_DIR}/{file_name}' if file_name else io.BytesIO()
@@ -41,7 +41,7 @@ class FileCreator(IFileCreator):
 
         :param data: Данные
         :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return:
+        :return: Объект io.BytesIO или None
         """
 
         if file_name:
@@ -65,7 +65,7 @@ class FileCreator(IFileCreator):
 
         :param data: Данные
         :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return:
+        :return: Объект io.BytesIO или None
         """
 
         if file_name:
