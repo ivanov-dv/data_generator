@@ -12,11 +12,11 @@ class PackerZip(IPacker):
     @staticmethod
     def create_from_buffer(buffer: io.BytesIO, archive_filename: str, inner_filename: str) -> None:
         """
-        Создает архив из буфера и сохраняет в указанный файл.
+        Create archive from buffer and save to the file.
 
-        :param buffer: Объект буфера io.BytesIO.
-        :param archive_filename: Имя файла архива с расширением.
-        :param inner_filename: Имя вложенного файла с расширением.
+        :param buffer: Object io.BytesIO.
+        :param archive_filename: Archive file name with extension.
+        :param inner_filename: Inner filename with extension.
         """
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
@@ -28,12 +28,12 @@ class PackerZip(IPacker):
     @staticmethod
     def create_from_files(source_dir: str, target_files: list, archive_name: str, delete_after=False) -> None:
         """
-        Создает архив из списка файлов и сохраняет в указанный файл.
+        Create archive from filelist and save to the file.
 
-        :param source_dir: Путь к папке, где находятся целевые файлы.
-        :param target_files: Список путей к файлам.
-        :param archive_name: Имя файла архива с расширением.
-        :param delete_after: Флаг для удаления исходных файлов после упаковки.
+        :param source_dir: Path to the target files.
+        :param target_files: List of target files.
+        :param archive_name: Archive file name with extension.
+        :param delete_after: Flag for deleting source files after packaging.
         """
 
         with zipfile.ZipFile(f'{OUTPUT_DIR}/{archive_name}', 'w', zipfile.ZIP_DEFLATED) as zip_file:
@@ -48,12 +48,12 @@ class Packer7z(IPacker):
     def _create_partition_from_buffer(buffer: io.BytesIO, archive_filename: str, inner_filename: str,
                                       max_size_mb: int) -> None:
         """
-        Вспомогательный метод для 7z. Создает тома архива, не превышающие заданного размера.
+        Helper method for 7z. Creates archive volumes from buffer.
 
-        :param buffer: Объект буфера io.BytesIO.
-        :param archive_filename: Имя файла архива с расширением.
-        :param inner_filename: Имя вложенного файла с расширением.
-        :param max_size_mb: Максимальный размер тома архива, в байтах.
+        :param buffer: Object io.BytesIO.
+        :param archive_filename: Archive file name with extension.
+        :param inner_filename: Inner filename with extension.
+        :param max_size_mb: Maximum volume size.
         """
 
         with multivolumefile.open(
@@ -65,10 +65,10 @@ class Packer7z(IPacker):
     @staticmethod
     def _create_partition_from_files(archive_filename: str, max_size_mb: int) -> None:
         """
-        Вспомогательный метод для 7z. Создает тома архива, не превышающие заданного размера.
+        Helper method for 7z. Creates archive volumes from files.
 
-        :param archive_filename: Имя файла архива с расширением.
-        :param max_size_mb: Максимальный размер тома архива, в байтах.
+        :param archive_filename: Archive file name with extension.
+        :param max_size_mb: Maximum volume size.
         """
 
         with multivolumefile.open(
@@ -80,11 +80,11 @@ class Packer7z(IPacker):
     @staticmethod
     def create_from_buffer(buffer: io.BytesIO, archive_filename: str, inner_filename: str) -> None:
         """
-        Создает архив из буфера и сохраняет в указанный файл.
+        Create archive from buffer and save to file.
 
-        :param buffer: Объект буфера io.BytesIO.
-        :param archive_filename: Имя файла архива с расширением.
-        :param inner_filename: Имя вложенного файла с расширением.
+        :param buffer: Object io.BytesIO.
+        :param archive_filename: Archive file name with extension.
+        :param inner_filename: Inner filename with extension.
         """
 
         with py7zr.SevenZipFile(file=f'{OUTPUT_DIR}/{archive_filename}', mode='w') as archive:
@@ -93,12 +93,12 @@ class Packer7z(IPacker):
     @staticmethod
     def create_from_files(source_dir: str, target_files: list, archive_name: str, delete_after=False) -> None:
         """
-        Создает архив из списка файлов и сохраняет в указанный файл.
+        Create archive from filelist and save to the file.
 
-        :param source_dir: Путь к папке, где находятся целевые файлы.
-        :param target_files: Список путей к файлам.
-        :param archive_name: Имя файла архива с расширением.
-        :param delete_after: Флаг для удаления исходных файлов после упаковки.
+        :param source_dir: Path to the target files.
+        :param target_files: List of target files.
+        :param archive_name: Archive file name with extension.
+        :param delete_after: Flag for deleting source files after packaging.
         """
 
         with py7zr.SevenZipFile(f'{OUTPUT_DIR}/{archive_name}', 'w') as archive:
@@ -111,14 +111,14 @@ class Packer7z(IPacker):
     def create_one_file_from_parts(cls, path: str, data: io.BytesIO | list, archive_filename: str,
                                    max_size_mb: int, inner_filename: str | None = None) -> None:
         """
-        Создает несколько томов, если архив превышает указанный размер.
-        После чего, объединяет их в один архив.
+        Creates multiple volumes if the archive exceeds the specified size.
+        After which, it combines them into one archive.
 
-        :param path: Путь к папке, где находятся выходные файлы.
-        :param data: Объект буфера io.BytesIO или список файлов для архивации.
-        :param archive_filename: Имя файла архива с расширением.
-        :param max_size_mb: Максимальный размер тома архива, в байтах.
-        :param inner_filename: Имя вложенного сгенерированного файла с расширением при использовании буфера.
+        :param path: Path to the output files.
+        :param data: Object io.BytesIO or list of files.
+        :param archive_filename: Archive file name with extension.
+        :param max_size_mb: Maximum volume size.
+        :param inner_filename: Inner filename with extension, if it uses buffer.
         """
 
         if isinstance(data, io.BytesIO):
