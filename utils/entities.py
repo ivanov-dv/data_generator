@@ -6,64 +6,65 @@ from typing import Generator
 
 class IGenerator(abc.ABC):
     """
-    Интерфейс генератора случайных данных.
+    Random data generator interface.
     """
 
     @classmethod
     def generate_random_row(cls) -> tuple:
         """
-        Генерирует одну строчку сгенерированных случайных данных.
+        Generates one line of generated random data.
 
-        :return: Одна строка из случайных данных в виде кортежа.
+        :return: One line of random data as a tuple.
         """
         pass
 
     @classmethod
     def generate_random_to_generator(cls, number_of_lines: int) -> Generator:
         """
-        Генерирует случайные данные в размере указанных строк.
+        Generates random data in the size of the specified rows.
 
-        :param number_of_lines: Количество строк.
-        :return: Объект генератора из множества строк(кортежей) случайных данных.
+
+        :param number_of_lines: Number of lines
+        :return: Object generator from tuples of random data.
         """
         pass
 
     @classmethod
     def generate_random_to_list(cls, number_of_lines: int) -> list:
         """
-        Генерирует случайные данные в размере указанных строк.
+        Generates random data in the size of the specified rows.
 
-        :param number_of_lines: Количество строк.
-        :return: Список из множества строк(кортежей) случайных данных.
+        :param number_of_lines: Number of lines.
+        :return: List of random rows.
         """
         pass
 
 
 class IPacker(abc.ABC):
     """
-    Интерфейс упаковщика данных.
+    Data packer interface.
     """
 
     @staticmethod
     def create_from_buffer(buffer: io.BytesIO, archive_filename: str, inner_filename: str) -> None:
         """
-        Создает архив из буфера и сохраняет в указанный файл.
+        Create archive from buffer and save to the file.
 
-        :param buffer: Объект буфера io.BytesIO.
-        :param archive_filename: Имя файла архива с расширением.
-        :param inner_filename: Имя вложенного файла с расширением.
+        :param buffer: Object io.BytesIO.
+        :param archive_filename: Archive file name with extension.
+        :param inner_filename: Inner filename with extension.
         """
         pass
 
     @staticmethod
     def create_from_files(source_dir: str, target_files: list, archive_name: str, delete_after=False) -> None:
         """
-        Создает архив из списка файлов и сохраняет в указанный файл.
+        Create archive from filelist and save to the file.
 
-        :param source_dir: Путь к папке, где находятся целевые файлы.
-        :param target_files: Список путей к файлам.
-        :param archive_name: Имя файла архива с расширением.
-        :param delete_after: Флаг для удаления исходных файлов после упаковки.
+        :param source_dir: Path to the target files.
+        :param target_files: List of target files.
+        :param archive_name: Archive file name with extension.
+        :param delete_after: Flag for deleting source files after packaging.
         """
         pass
 
@@ -71,52 +72,52 @@ class IPacker(abc.ABC):
     def create_one_file_from_parts(cls, path: str, data: io.BytesIO | list, archive_filename: str,
                                    max_size_mb: int, inner_filename: str | None = None) -> None:
         """
-        Создает несколько томов, если архив превышает указанный размер.
-        После чего, объединяет их в один архив.
+        Creates multiple volumes if the archive exceeds the specified size.
+        After which, it combines them into one archive.
 
-        :param path: Путь к папке, где находятся выходные файлы.
-        :param data: Объект буфера io.BytesIO или список файлов для архивации.
-        :param archive_filename: Имя файла архива с расширением.
-        :param max_size_mb: Максимальный размер тома архива, в байтах.
-        :param inner_filename: Имя вложенного сгенерированного файла с расширением при использовании буфера.
+        :param path: Path to the output files.
+        :param data: Object io.BytesIO or list of files.
+        :param archive_filename: Archive file name with extension.
+        :param max_size_mb: Maximum volume size.
+        :param inner_filename: Inner filename with extension, if it uses buffer.
         """
         pass
 
 
 class IFileCreator(abc.ABC):
     """
-    Интерфейс для создания файлов.
+    Interface for creating files.
     """
 
     @staticmethod
     def create_excel(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
         """
-        Создает Excel файл и сохраняет в файл или буфер.
+        Create Excel file. Save to the file or buffer.
 
-        :param data: Данные
-        :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return:
+        :param data: Data (list or generator).
+        :param file_name: Filename, If None, save to buffer.
+        :return: None or io.BytesIO
         """
         pass
 
     @staticmethod
     def create_csv(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
         """
-        Создает CSV файл и сохраняет в файл или буфер.
+        Create CSV file. Save to the file or buffer.
 
-        :param data: Данные
-        :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return:
+        :param data: Data (list or generator).
+        :param file_name: Filename, If None, save to buffer.
+        :return: None or io.BytesIO
         """
         pass
 
     @staticmethod
     def create_txt(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
         """
-        Создает TXT файл и сохраняет в файл или буфер.
+        Create TXT file. Save to the file or buffer.
 
-        :param data: Данные
-        :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return:
+        :param data: Data (list or generator).
+        :param file_name: Filename, If None, save to buffer.
+        :return: None or io.BytesIO
         """
         pass
