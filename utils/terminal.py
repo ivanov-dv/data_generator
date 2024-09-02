@@ -21,12 +21,13 @@ class Terminal:
     @staticmethod
     def _check_input_range(value: str, enum_class: enum.Enum, start=None, end=None) -> bool:
         """
-        Проверяет, что введенное значение входит в диапазон допустимых значений Enum.
+        Check input value in enum range.
 
-        :param value: Введенное значение.
-        :param enum_class: Enum класс с перечисляемыми значениями.
-        :param start: Начальное значение индекса в списке для проверки.
-        :param end: Конечное значение индекса в списке для проверки.
+        :param value: Input value.
+        :param enum_class: Enum class.
+        :param start: Start enum index for checking.
+        :param end: End enum index for checking.
+        :return: True, if value in enum range, False otherwise.
         """
 
         list_values = list(enum_class.__dict__['_value2member_map_'].keys())[start:end]
@@ -42,12 +43,13 @@ class Terminal:
     @staticmethod
     def _show_choice_print(text: str, enum_class: enum.Enum, start: int = None, end: int = None) -> str:
         """
-        Создает текст для вывода из сообщения text и списка для выбора на основании Enum класса.
+        Create text for output message and list of choices based on Enum class.
 
-        :param text: Текст вывода.
-        :param enum_class: Enum класс с перечисляемыми значениями.
-        :param start: Начальное значение индекса в списке для отображения.
-        :param end: Конечное значение индекса в списке для отображения.
+        :param text: Output text.
+        :param enum_class: Enum class.
+        :param start: Start enum index for showing choices.
+        :param end: End enum index for showing choices.
+        :return: Output text with choices list.
         """
         if hasattr(enum_class, 'field_name'):
             choice_list = [f'{text.value} - {text.field_name(text)}' for text in enum_class][start:end]
@@ -57,9 +59,9 @@ class Terminal:
 
     def _create_file_without_packer(self, data: Generator | list) -> None:
         """
-        Вспомогательный метод для создания файла без упаковщика после получения всех параметров от пользователя.
+        Helper method for creating a file without a packer after receiving all user input parameters.
 
-        :param data: Объект генератора или список.
+        :param data: Generator object or list. Random data.
         """
         file_format = self.config_data['file_format']
         if file_format == FileFormat.XLSX:
@@ -71,9 +73,9 @@ class Terminal:
 
     def _create_zip_file(self, data: Generator | list) -> None:
         """
-        Вспомогательный метод для создания zip архива после получения всех параметров от пользователя.
+        Helper method for creating zip archive after receiving all user input parameters.
 
-        :param data: Объект генератора или список.
+        :param data: Generator object or list. Random data.
         """
         file_format = self.config_data['file_format']
         if file_format == FileFormat.XLSX:
@@ -91,9 +93,9 @@ class Terminal:
 
     def _create_7z_file(self, data: Generator | list) -> None:
         """
-        Вспомогательный метод для создания 7z архива после получения всех параметров от пользователя.
+        Helper method for creating 7z archive after receiving all user input parameters.
 
-        :param data: Объект генератора или список.
+        :param data: Generator object or list. Random data.
         """
 
         file_format = self.config_data['file_format']
@@ -130,7 +132,7 @@ class Terminal:
     @staticmethod
     def show_welcome_print() -> None:
         """
-        Приветственное сообщение программы.
+        Welcome message.
         """
 
         print(
@@ -139,6 +141,9 @@ class Terminal:
         )
 
     def get_work_format(self):
+        """
+        Get the program work format.
+        """
         text = self._show_choice_print('Выберите, что хотите сделать:', WorkFormat)
         work_format = input(text).strip()
         if not self._check_input_range(work_format, WorkFormat):
@@ -148,9 +153,9 @@ class Terminal:
 
     def get_number_of_lines(self) -> int:
         """
-        Получение количества линий для генерации и запись в config_data.
+        Get number of lines for generating and writing to config_data.
 
-        :return: Число int.
+        :return: Number of lines.
         """
         number_of_lines = input('\nВведите количество строк для генерации\n> ').strip()
         if not number_of_lines.isdigit() and 1 <= int(number_of_lines) <= 2000000:
@@ -161,9 +166,9 @@ class Terminal:
 
     def get_data_file_format(self):
         """
-        Получение формата выходного файла со сгенерированными данными и запись в config_data.
+        Get output file format and write to config_data.
 
-        :return: Объект FileFormat.
+        :return: Object FileFormat.
         """
 
         text = self._show_choice_print('Выберите формат файла:', FileFormat)
@@ -175,9 +180,9 @@ class Terminal:
 
     def get_packer_format(self) -> PackerFormat:
         """
-        Получение формата файла архива и запись в config_data.
+        Get packer format and write to config_data.
 
-        :return: Объект PackerFormat.
+        :return: Object PackerFormat.
         """
 
         work_format = self.config_data['work_format']
@@ -202,9 +207,9 @@ class Terminal:
 
     def get_files_for_packer(self) -> list:
         """
-        Получение списка файлов для архивации из папки "input" и запись в config_data.
+        Get a list of files for packing from the "input" directory and write to config_data.
 
-        :return: Список файлов в папке "input".
+        :return: List of files in "input" directory.
         """
 
         input(f'\nПоместите файлы для архивации в папку "{INPUT_DIR}" и нажмите Enter')
@@ -224,9 +229,9 @@ class Terminal:
 
     def get_packer_type(self) -> PackerType:
         """
-        Получение типа архивации (одним файлом или частями) и запись в config_data.
+        Get packer type and write to config data.
 
-        :return: Объект PackerType
+        :return: Object PackerType.
         """
 
         text = self._show_choice_print('Выберите тип архивации:', PackerType)
@@ -238,9 +243,9 @@ class Terminal:
 
     def get_max_size_mb(self) -> float:
         """
-        Получение максимального размера тома архива от 1 до 50 и запись в config_data.
+        Get max size MB for packing (1-50) and write to config_data.
 
-        :return: Целое число int.
+        :return: Max size MB for packing (1-50).
         """
 
         max_size_mb = input('\nВведите максимальный размер файла архива (в МБ)\n> ').strip()
@@ -253,7 +258,7 @@ class Terminal:
 
     def get_generator_parameters(self) -> None:
         """
-        Получение параметров от пользователя для генератора случайных данных.
+        Get generator parameters for generate random data.
         """
 
         self.get_number_of_lines()
@@ -265,7 +270,7 @@ class Terminal:
 
     def get_packer_parameters(self) -> None:
         """
-        Получение параметров от пользователя для упаковщика пользовательских файлов и запись в config_data.
+        Get packer parameters for packing user files and write to config_data.
         """
 
         self.get_files_for_packer()
@@ -280,9 +285,9 @@ class Terminal:
     # Генератор оказался чуть быстрее и занимает меньше оперативной памяти.
     def generate_data_to_generator(self) -> Generator:
         """
-        Создание объекта генератора случайных данных.
+        Create object of generator random data.
 
-        :return: Объект генератора случайных данных.
+        :return: Generator object.
         """
 
         try:
@@ -294,9 +299,9 @@ class Terminal:
 
     def generate_data_to_list(self) -> list:
         """
-        Создание списка случайных данных.
+        Create list of random data.
 
-        :return: Список случайных данных.
+        :return: List of random data.
         """
         try:
             return self.person_generator.generate_random_to_list(self.config_data['number_of_lines'])
@@ -307,9 +312,9 @@ class Terminal:
 
     def create_file(self, data: Generator | list) -> None:
         """
-        Создание файла со случайными данными и запись в файл xlsx, csv или txt.
+        Create file with random data and write to xlsx, csv or txt.
 
-        :param data: Сгенерированные данные в виде объекта генератора или списка.
+        :param data: Data (generator or list).
         """
 
         packer_format = self.config_data['packer_format']
@@ -329,7 +334,7 @@ class Terminal:
 
     def package_files(self) -> None:
         """
-        Упаковка пользовательских файлов архиватором.
+        Package user files.
         """
 
         print('Создание архива')
@@ -351,7 +356,7 @@ class Terminal:
 
     def start(self) -> None:
         """
-        Старт программы с интерфейсом в терминале.
+        Start program with terminal interface.
         """
         try:
             work_format = self.get_work_format()
