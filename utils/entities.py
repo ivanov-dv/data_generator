@@ -10,6 +10,7 @@ class IGenerator(abc.ABC):
     """
 
     @classmethod
+    @abc.abstractmethod
     def generate_random_row(cls) -> tuple:
         """
         Generates one line of generated random data.
@@ -19,6 +20,7 @@ class IGenerator(abc.ABC):
         pass
 
     @classmethod
+    @abc.abstractmethod
     def generate_random_to_generator(cls, number_of_lines: int) -> Generator:
         """
         Generates random data in the size of the specified rows.
@@ -30,6 +32,7 @@ class IGenerator(abc.ABC):
         pass
 
     @classmethod
+    @abc.abstractmethod
     def generate_random_to_list(cls, number_of_lines: int) -> list:
         """
         Generates random data in the size of the specified rows.
@@ -46,6 +49,7 @@ class IPacker(abc.ABC):
     """
 
     @staticmethod
+    @abc.abstractmethod
     def create_from_buffer(buffer: io.BytesIO, archive_filename: str, inner_filename: str) -> None:
         """
         Create archive from buffer and save to the file.
@@ -57,6 +61,7 @@ class IPacker(abc.ABC):
         pass
 
     @staticmethod
+    @abc.abstractmethod
     def create_from_files(source_dir: str, target_files: list, archive_name: str, delete_after=False) -> None:
         """
         Create archive from filelist and save to the file.
@@ -90,6 +95,7 @@ class IFileCreator(abc.ABC):
     """
 
     @staticmethod
+    @abc.abstractmethod
     def create_excel(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
         """
         Create Excel file. Save to the file or buffer.
@@ -101,6 +107,7 @@ class IFileCreator(abc.ABC):
         pass
 
     @staticmethod
+    @abc.abstractmethod
     def create_csv(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
         """
         Create CSV file. Save to the file or buffer.
@@ -112,6 +119,7 @@ class IFileCreator(abc.ABC):
         pass
 
     @staticmethod
+    @abc.abstractmethod
     def create_txt(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
         """
         Create TXT file. Save to the file or buffer.
