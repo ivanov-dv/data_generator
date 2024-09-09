@@ -1,16 +1,13 @@
 import os
 
-from config import INPUT_DIR, OUTPUT_DIR, LOG_DIR
+from config import DIR_NAMES
 from engine import terminal
 
 
 def main():
-    if not os.path.exists(INPUT_DIR):
-        os.mkdir(INPUT_DIR)
-    if not os.path.exists(OUTPUT_DIR):
-        os.mkdir(OUTPUT_DIR)
-    if not os.path.exists(LOG_DIR):
-        os.mkdir(LOG_DIR)
+    for dir_name in DIR_NAMES:
+        if not os.path.exists(dir_name):
+            os.mkdir(dir_name)
     terminal.start()
 
 
