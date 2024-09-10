@@ -27,6 +27,38 @@ class UserData:
         self.packer_type = packer_type
         self.max_size_mb = max_size_mb
 
+    def _get_packer_format_for_generator(self):
+        """Helper method to getting the packer format for generator"""
+        while True:
+            text = ('Выберите формат архива, если требуется архивация.\n'
+                    'Формат 7z поддерживает разбивку по максимальному размеру тома:')
+            packer_format = input(msg.choice(text, PackerFormat)).strip()
+            if not validator.validate_input_data(packer_format, PackerFormat):
+                print(msg.incorrect_input(PackerFormat))
+            self.packer_format = PackerFormat(packer_format)
+            return
+
+    def _get_packer_format_for_packer(self):
+        """Helper method to get the packer format for packer"""
+        while True:
+            text = 'Выберите формат архива:'
+            packer_format = input(msg.choice(text, PackerFormat, end=-1)).strip()
+            if not validator.validate_input_data(packer_format, PackerFormat):
+                print(msg.incorrect_input(PackerFormat, end=-1))
+            self.packer_format = PackerFormat(packer_format)
+            return
+
+    def _check_input_dir(self):
+        """Helper method to check the input dir"""
+        while True:
+            input(f'\nПоместите файлы для архивации в папку "{INPUT_DIR}" и нажмите Enter.')
+            files = os.listdir(f'./{INPUT_DIR}')
+            if not files:
+                print(f'Не найдено ни одного файла в папке "{INPUT_DIR}".\n')
+            else:
+                self.files_for_packer = files
+                return
+
     @staticmethod
     def welcome():
         """Welcome message"""
@@ -43,7 +75,7 @@ class UserData:
                 print(msg.incorrect_input(WorkFormat))
             else:
                 self.work_format = WorkFormat(work_format)
-                return 
+                return
 
     def get_number_of_lines(self):
         """Get the number of lines for generator"""
@@ -53,7 +85,7 @@ class UserData:
                 print('Неверный ввод. Введите положительное целое число от 1 до 2_000_000 лишних символов.\n')
             else:
                 self.number_of_lines = int(number_of_lines)
-                return 
+                return
 
     def get_data_file_format(self):
         """Get the data file format"""
@@ -63,28 +95,7 @@ class UserData:
                 print(msg.incorrect_input(FileFormat))
             else:
                 self.data_file_format = FileFormat(data_file_format)
-                return 
-
-    def _get_packer_format_for_generator(self):
-        """Helper method to getting the packer format for generator"""
-        while True:
-            text = ('Выберите формат архива, если требуется архивация.\n'
-                    'Формат 7z поддерживает разбивку по максимальному размеру тома:')
-            packer_format = input(msg.choice(text, PackerFormat)).strip()
-            if not validator.validate_input_data(packer_format, PackerFormat):
-                print(msg.incorrect_input(PackerFormat))
-            self.packer_format = PackerFormat(packer_format)
-            return 
-
-    def _get_packer_format_for_packer(self):
-        """Helper method to get the packer format for packer"""
-        while True:
-            text = 'Выберите формат архива:'
-            packer_format = input(msg.choice(text, PackerFormat, end=-1)).strip()
-            if not validator.validate_input_data(packer_format, PackerFormat):
-                print(msg.incorrect_input(PackerFormat, end=-1))
-            self.packer_format = PackerFormat(packer_format)
-            return 
+                return
 
     def get_packer_format(self):
         """Get the packer format"""
@@ -98,17 +109,6 @@ class UserData:
                 f'get_packer_format - Некорректный формат работы программы. Config_data - {self.__dict__}')
             print('Некорректный формат работы программы.')
         action()
-
-    def _check_input_dir(self):
-        """Helper method to check the input dir"""
-        while True:
-            input(f'\nПоместите файлы для архивации в папку "{INPUT_DIR}" и нажмите Enter.')
-            files = os.listdir(f'./{INPUT_DIR}')
-            if not files:
-                print(f'Не найдено ни одного файла в папке "{INPUT_DIR}".\n')
-            else:
-                self.files_for_packer = files
-                return 
 
     def get_files_for_packer(self):
         """Get list of files for packer"""
