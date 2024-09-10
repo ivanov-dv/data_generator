@@ -1,81 +1,90 @@
+import abc
+
 from mimesis import Person, Locale
 from typing import Generator
 
-from utils.entities import IGenerator
+
+class IGenerator(abc.ABC):
+    """
+    Random data generator interface.
+    """
+
+    @abc.abstractmethod
+    def generate_random_row(self) -> tuple:
+        # raise NotImplementedError не использую, так как это реализовано в @abc.abstractmethod
+        """
+        Generates one line of generated random data.
+        :return: One line of random data as a tuple.
+        """
+
+    @abc.abstractmethod
+    def generate_random_to_generator(self, number_of_lines: int) -> Generator:
+        """
+        Generates random data in the size of the specified rows.
+        :param number_of_lines: Number of lines
+        :return: Object generator from tuples of random data.
+        """
+
+    @abc.abstractmethod
+    def generate_random_to_list(self, number_of_lines: int) -> list:
+        """
+        Generates random data in the size of the specified rows.
+        :param number_of_lines: Number of lines.
+        :return: List of random rows.
+        """
 
 
 class PersonGenerator(IGenerator):
-    person = Person(locale=Locale.RU)
 
-    @classmethod
-    def generate_random_row(cls) -> tuple:
-        """
-        Генерирует одну строчку сгенерированных случайных данных.
+    def __init__(self, locale: Locale = Locale.RU):
+        self.person = Person(locale=locale)
 
-        :return: Одна строка из случайных данных в виде кортежа.
-        """
-
+    def generate_random_row(self) -> tuple:
         return (
-            cls.person.first_name(),
-            cls.person.last_name(),
-            cls.person.gender(),
-            cls.person.weight(),
-            cls.person.username(),
-            cls.person.email(),
-            cls.person.password(),
-            cls.person.birthdate(),
-            cls.person.height(),
-            cls.person.nationality()
+            self.person.first_name(),
+            self.person.last_name(),
+            self.person.gender(),
+            self.person.weight(),
+            self.person.username(),
+            self.person.email(),
+            self.person.password(),
+            self.person.birthdate(),
+            self.person.height(),
+            self.person.nationality()
         )
 
-    @classmethod
-    def generate_random_to_generator(cls, number_of_lines: int) -> Generator:
-        """
-        Генерирует случайные данные в размере указанных строк.
-
-        :param number_of_lines: Количество строк.
-        :return: Объект генератора из множества строк(кортежей) случайных данных.
-        """
-
-        result = (
+    def generate_random_to_generator(self, number_of_lines: int) -> Generator:
+        return (
             (
-                cls.person.first_name(),
-                cls.person.last_name(),
-                cls.person.gender(),
-                cls.person.weight(),
-                cls.person.username(),
-                cls.person.email(),
-                cls.person.password(),
-                cls.person.birthdate(),
-                cls.person.height(),
-                cls.person.nationality()
+                self.person.first_name(),
+                self.person.last_name(),
+                self.person.gender(),
+                self.person.weight(),
+                self.person.username(),
+                self.person.email(),
+                self.person.password(),
+                self.person.birthdate(),
+                self.person.height(),
+                self.person.nationality()
             )
             for _ in range(number_of_lines)
         )
-        return result
 
-    @classmethod
-    def generate_random_to_list(cls, number_of_lines: int) -> list:
-        """
-        Генерирует случайные данные в размере указанных строк.
-
-        :param number_of_lines: Количество строк.
-        :return: Список из множества строк(кортежей) случайных данных.
-        """
-
-        result = [
+    def generate_random_to_list(self, number_of_lines: int) -> list:
+        # По-моему, так лаконичнее + list comprehension работает быстрее цикла for,
+        # а строк генерировать нужно много.
+        return [
             (
-                cls.person.first_name(),
-                cls.person.last_name(),
-                cls.person.gender(),
-                cls.person.weight(),
-                cls.person.username(),
-                cls.person.email(),
-                cls.person.password(),
-                cls.person.birthdate(),
-                cls.person.height(),
-                cls.person.nationality()
+                self.person.first_name(),
+                self.person.last_name(),
+                self.person.gender(),
+                self.person.weight(),
+                self.person.username(),
+                self.person.email(),
+                self.person.password(),
+                self.person.birthdate(),
+                self.person.height(),
+                self.person.nationality()
             )
             for _ in range(number_of_lines)
         ]
-        return result

@@ -14,7 +14,7 @@ INPUT_DIR = 'input'
 DIR_NAMES = [dir_ for var_, dir_  in globals().items() if var_.endswith('_DIR')]
 
 OUTPUT_FILENAME = 'output'
-INPUT_FILENAME = 'input'
+INNER_FILENAME = 'output'
 
 TXT_ENCODING = 'utf-8'
 CSV_ENCODING = 'utf-8'

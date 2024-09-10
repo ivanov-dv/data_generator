@@ -1,3 +1,4 @@
+import abc
 import csv
 import io
 import xlsxwriter
@@ -5,76 +6,71 @@ import xlsxwriter
 from typing import Generator
 
 from config import TXT_ENCODING, CSV_ENCODING, OUTPUT_DIR
-from utils.entities import IFileCreator
 
 
-class FileCreator(IFileCreator):
-    @staticmethod
-    def create_excel(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
+class IFileCreator(abc.ABC):
+    """Interface for creating files."""
+
+    def __init__(self, data: list | Generator, filename: str = None, output_dir = OUTPUT_DIR):
+        self.data = data
+        self.filename = filename
+        self.output_dir = output_dir
+
+
+    @abc.abstractmethod
+    def create(self) -> io.BytesIO | str:
         """
-        Создает Excel файл и сохраняет в файл или буфер.
-
-        :param data: Данные
-        :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return: Объект io.BytesIO или None
+        Create file with random data.
+        :return: BytesIO or created filename
         """
 
-        output = f'{OUTPUT_DIR}/{file_name}' if file_name else io.BytesIO()
+
+class ExcelFileCreator(IFileCreator):
+    def create(self):
+        output = f'{self.output_dir}/{self.filename}.xlsx' if self.filename else io.BytesIO()
         workbook = xlsxwriter.Workbook(output)
         worksheet = workbook.add_worksheet()
 
         row = 0
-        for record in data:
+        for record in self.data:
             worksheet.write_row(row, 0, record)
             row += 1
-
         workbook.close()
 
-        if not file_name:
+        if not self.filename:
             output.seek(0)
             return output
 
-    @staticmethod
-    def create_csv(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
-        """
-        Создает CSV файл и сохраняет в файл или буфер.
+        return f'{self.filename}.xlsx'
 
-        :param data: Данные
-        :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return: Объект io.BytesIO или None
-        """
 
-        if file_name:
-            with open(f'{OUTPUT_DIR}/{file_name}', 'w', newline='', encoding=CSV_ENCODING) as csvfile:
+class CsvFileCreator(IFileCreator):
+    def create(self):
+        if self.filename:
+            with open(f'{self.output_dir}/{self.filename}.csv', 'w', newline='', encoding=CSV_ENCODING) as csvfile:
                 writer = csv.writer(csvfile)
-                for row in data:
+                for row in self.data:
                     writer.writerow(row)
-
+                return f'{self.filename}.csv'
         else:
             output = io.StringIO()
             writer = csv.writer(output)
-            for row in data:
+            for row in self.data:
                 writer.writerow(row)
             output.seek(0)
             return io.BytesIO(output.getvalue().encode('utf-8'))
 
-    @staticmethod
-    def create_txt(data: list | Generator, file_name: str = None) -> io.BytesIO | None:
-        """
-        Создает TXT файл и сохраняет в файл или буфер.
 
-        :param data: Данные
-        :param file_name: Имя файла. Если None, то сохранение в буфер.
-        :return: Объект io.BytesIO или None
-        """
-
-        if file_name:
-            with open(f'{OUTPUT_DIR}/{file_name}', 'w', encoding=TXT_ENCODING) as txt_file:
-                for row in data:
+class TxtFileCreator(IFileCreator):
+    def create(self):
+        if self.filename:
+            with open(f'{self.output_dir}/{self.filename}.txt', 'w', encoding=TXT_ENCODING) as txt_file:
+                for row in self.data:
                     txt_file.write(', '.join(map(str, row)) + '\n')
+                return f'{self.filename}.txt'
         else:
             output = io.StringIO()
-            for row in data:
+            for row in self.data:
                 output.write(', '.join(map(str, row)) + '\n')
             output.seek(0)
             return io.BytesIO(output.getvalue().encode('utf-8'))

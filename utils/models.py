@@ -16,7 +16,7 @@ class PackerFormat(enum.Enum):
     def field_name(cls, value):
         field_names = {
             '1': 'zip',
-            '2': '7z',
+            '2': '7z (поддерживает разбиение на части).',
             '3': 'Архивация не требуется'
         }
         return field_names[value.value]
@@ -30,7 +30,7 @@ class PackerType(enum.Enum):
     def field_name(cls, value):
         field_names = {
             '1': 'Архивировать в один файл',
-            '2': 'Указать максимальный размер архива. При превышении архив будет разбит на части (формат .7z).'
+            '2': 'Указать максимальный размер архива.'
         }
         return field_names[value.value]
 
