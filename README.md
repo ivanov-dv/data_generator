@@ -20,6 +20,6 @@ venv\Scripts\activate.bat
 python -m pip install -r requirements.txt
 
 #
-### Протестировано на Python 3.11.
+### Протестировано на Python 3.12.
 
 ### Точка входа - main.py.
