@@ -21,7 +21,7 @@ class IFileCreator(abc.ABC):
     def create(self) -> io.BytesIO | str:
         """
         Create file with random data.
-        :return: BytesIO or created filename
+        :return: BytesIO or created filename.
         """
 
 
@@ -37,40 +37,48 @@ class ExcelFileCreator(IFileCreator):
             row += 1
         workbook.close()
 
-        if not self.filename:
-            output.seek(0)
-            return output
+        output.seek(0) if not self.filename else None
 
-        return f'{self.filename}.xlsx'
+        return f'{self.filename}.xlsx' if self.filename else output
 
 
 class CsvFileCreator(IFileCreator):
-    def create(self):
-        if self.filename:
-            with open(f'{self.output_dir}/{self.filename}.csv', 'w', newline='', encoding=CSV_ENCODING) as csvfile:
-                writer = csv.writer(csvfile)
-                for row in self.data:
-                    writer.writerow(row)
-                return f'{self.filename}.csv'
-        else:
-            output = io.StringIO()
-            writer = csv.writer(output)
+    def _create_to_file(self):
+        """Helper method. Create csv file with random data to file."""
+        with open(f'{self.output_dir}/{self.filename}.csv', 'w', newline='', encoding=CSV_ENCODING) as csvfile:
+            writer = csv.writer(csvfile)
             for row in self.data:
                 writer.writerow(row)
-            output.seek(0)
-            return io.BytesIO(output.getvalue().encode('utf-8'))
+            return f'{self.filename}.csv'
+
+    def _create_to_buffer(self):
+        """Helper method. Create csv file with random data to buffer."""
+        output = io.StringIO()
+        writer = csv.writer(output)
+        for row in self.data:
+            writer.writerow(row)
+        output.seek(0)
+        return io.BytesIO(output.getvalue().encode('utf-8'))
+
+    def create(self):
+        return self._create_to_file() if self.filename else self._create_to_buffer()
 
 
 class TxtFileCreator(IFileCreator):
-    def create(self):
-        if self.filename:
-            with open(f'{self.output_dir}/{self.filename}.txt', 'w', encoding=TXT_ENCODING) as txt_file:
-                for row in self.data:
-                    txt_file.write(', '.join(map(str, row)) + '\n')
-                return f'{self.filename}.txt'
-        else:
-            output = io.StringIO()
+    def _create_to_file(self):
+        """Helper method. Create txt file with random data to file."""
+        with open(f'{self.output_dir}/{self.filename}.txt', 'w', encoding=TXT_ENCODING) as txt_file:
             for row in self.data:
-                output.write(', '.join(map(str, row)) + '\n')
-            output.seek(0)
-            return io.BytesIO(output.getvalue().encode('utf-8'))
+                txt_file.write(', '.join(map(str, row)) + '\n')
+            return f'{self.filename}.txt'
+
+    def _create_to_buffer(self):
+        """Helper method. Create txt file with random data to buffer."""
+        output = io.StringIO()
+        for row in self.data:
+            output.write(', '.join(map(str, row)) + '\n')
+        output.seek(0)
+        return io.BytesIO(output.getvalue().encode('utf-8'))
+
+    def create(self):
+        return self._create_to_file() if self.filename else self._create_to_buffer()
