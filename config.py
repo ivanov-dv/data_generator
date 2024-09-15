@@ -1,6 +1,5 @@
-import os
-
 from loguru import logger
+
 
 logger.remove()
 logger.add('logs/errors.log', format='{time} - {name} - {level} - {message}',
