@@ -44,20 +44,28 @@ class IPacker(abc.ABC):
 
 
 class PackerZip(IPacker):
+    def _create_archive_from_buffer(self) -> None:
+        """Helper method. Create archive from buffer"""
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr(self.inner_filename, self.data.getvalue())
+        zip_buffer.seek(0)
+        with open(f'{OUTPUT_DIR}/{self.archive_filename}.zip', 'wb') as f:
+            f.write(zip_buffer.getvalue())
+
+    def _create_archive_from_files(self, delete_after=False):
+        """Helper method. Create archive from files"""
+        with zipfile.ZipFile(f'{OUTPUT_DIR}/{self.archive_filename}.zip', 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for file_path in self.data:
+                zip_file.write(f'{self.source_dir}/{file_path}', file_path)
+                if delete_after:
+                    os.remove(f'{self.source_dir}/{file_path}')
+
     def create_archive(self, delete_after=False) -> None:
         if isinstance(self.data, io.BytesIO):
-            zip_buffer = io.BytesIO()
-            with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-                zip_file.writestr(self.inner_filename, self.data.getvalue())
-            zip_buffer.seek(0)
-            with open(f'{OUTPUT_DIR}/{self.archive_filename}.zip', 'wb') as f:
-                f.write(zip_buffer.getvalue())
+            self._create_archive_from_buffer()
         elif isinstance(self.data, list):
-            with zipfile.ZipFile(f'{OUTPUT_DIR}/{self.archive_filename}.zip', 'w', zipfile.ZIP_DEFLATED) as zip_file:
-                for file_path in self.data:
-                    zip_file.write(f'{self.source_dir}/{file_path}', file_path)
-                    if delete_after:
-                        os.remove(f'{self.source_dir}/{file_path}')
+            self._create_archive_from_files(delete_after)
         else:
             logger.error(f'{self.__class__.__qualname__} - аргумент data должен быть list или io.BytesIO')
             raise ValueError('Аргумент data должен быть list или io.BytesIO')
@@ -69,6 +77,19 @@ class PackerZip(IPacker):
 
 
 class Packer7z(IPacker):
+    def _create_archive_from_buffer(self) -> None:
+        """Helper method. Create archive from buffer"""
+        with py7zr.SevenZipFile(file=f'{OUTPUT_DIR}/{self.archive_filename}.7z', mode='w') as archive:
+            archive.writestr(self.data.getvalue(), self.inner_filename)
+
+    def _create_archive_from_files(self, delete_after=False) -> None:
+        """Helper method. Create archive from files"""
+        with py7zr.SevenZipFile(f'{OUTPUT_DIR}/{self.archive_filename}.7z', 'w') as archive:
+            for file_path in self.data:
+                archive.write(f'{self.source_dir}/{file_path}', file_path)
+                if delete_after:
+                    os.remove(f'{self.source_dir}/{file_path}')
+
     def _create_partition(
             self,
             partition_archive_filename: str,
@@ -76,8 +97,7 @@ class Packer7z(IPacker):
         ) -> None:
         """
         Helper method for 7z. Creates archive volumes from buffer.
-
-        :partition_archive_filename: Filename for partition archive.
+        :param partition_archive_filename: Filename for partition archive.
         :param max_size_mb: Maximum volume size.
         """
         with multivolumefile.open(
@@ -96,14 +116,9 @@ class Packer7z(IPacker):
 
     def create_archive(self, delete_after=False) -> None:
         if isinstance(self.data, io.BytesIO):
-            with py7zr.SevenZipFile(file=f'{OUTPUT_DIR}/{self.archive_filename}.7z', mode='w') as archive:
-                archive.writestr(self.data.getvalue(), self.inner_filename)
+            self._create_archive_from_buffer()
         elif isinstance(self.data, list):
-            with py7zr.SevenZipFile(f'{OUTPUT_DIR}/{self.archive_filename}.7z', 'w') as archive:
-                for file_path in self.data:
-                    archive.write(f'{self.source_dir}/{file_path}', file_path)
-                    if delete_after:
-                        os.remove(f'{self.source_dir}/{file_path}')
+            self._create_archive_from_files(delete_after)
         else:
             logger.error(f'{self.__class__.__qualname__} - аргумент data должен быть list или io.BytesIO')
             raise ValueError('Аргумент data должен быть list или io.BytesIO')
