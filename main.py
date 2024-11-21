@@ -52,7 +52,9 @@ def main():
             user_data.get_max_size()
 
         if user_data.work_format == WorkFormat.GENERATOR:
-            data = person_generator.generate_random_to_generator(user_data.number_of_lines)
+            data = person_generator.generate_random_to_generator(
+                user_data.number_of_lines
+            )
         else:
             data = user_data.files_for_packer
 
@@ -79,7 +81,11 @@ def main():
             else:
                 data_for_packer = user_data.files_for_packer
             print(data_for_packer)
-            archive(data_for_packer, OUTPUT_FILENAME, inner_file_format=inner_file_format).create_archive()
+            archive(
+                data_for_packer,
+                OUTPUT_FILENAME,
+                inner_file_format=inner_file_format
+            ).create_archive()
         return
 
 

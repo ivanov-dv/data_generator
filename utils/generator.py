@@ -11,7 +11,6 @@ class IGenerator(abc.ABC):
 
     @abc.abstractmethod
     def generate_random_row(self) -> tuple:
-        # raise NotImplementedError не использую, так как это реализовано в @abc.abstractmethod
         """
         Generates one line of generated random data.
         :return: One line of random data as a tuple.
@@ -71,8 +70,6 @@ class PersonGenerator(IGenerator):
         )
 
     def generate_random_to_list(self, number_of_lines: int) -> list:
-        # По-моему, так лаконичнее + list comprehension работает быстрее цикла for,
-        # а строк генерировать нужно много.
         return [
             (
                 self.person.first_name(),

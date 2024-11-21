@@ -2,14 +2,22 @@ import enum
 
 
 class FileFormat(enum.Enum):
-    """Enum class for file formats. Values are the user's choice in the terminal"""
+    """
+    Enum class for file formats.
+    Values are the user's choice in the terminal.
+    """
+
     XLSX = '1'
     CSV = '2'
     TXT = '3'
 
 
 class PackerFormat(enum.Enum):
-    """Enum class for packer formats. Values are the user's choice in the terminal'"""
+    """
+    Enum class for packer formats.
+    Values are the user's choice in the terminal.
+    """
+
     ZIP = '1'
     FORMAT_7Z = '2'
     NO_PACKER = '3'
@@ -29,7 +37,11 @@ class PackerFormat(enum.Enum):
 
 
 class PackerType(enum.Enum):
-    """Enum class for packer types. Values are the user's choice in the terminal'"""
+    """
+    Enum class for packer types.
+    Values are the user's choice in the terminal.
+    """
+
     ONE_FILE = '1'
     PART_FILES = '2'
 
@@ -47,7 +59,11 @@ class PackerType(enum.Enum):
 
 
 class WorkFormat(enum.Enum):
-    """Enum class for work formats. Values are the user's choice in the terminal'"""
+    """
+    Enum class for work formats.
+    Values are the user's choice in the terminal.
+    """
+
     GENERATOR = '1'
     PACKER = '2'
 

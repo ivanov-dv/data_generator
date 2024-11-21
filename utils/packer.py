@@ -55,7 +55,11 @@ class PackerZip(IPacker):
 
     def _create_archive_from_files(self, delete_after=False):
         """Helper method. Create archive from files"""
-        with zipfile.ZipFile(f'{OUTPUT_DIR}/{self.archive_filename}.zip', 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        with zipfile.ZipFile(
+                f'{OUTPUT_DIR}/{self.archive_filename}.zip',
+                'w',
+                zipfile.ZIP_DEFLATED
+        ) as zip_file:
             for file_path in self.data:
                 zip_file.write(f'{self.source_dir}/{file_path}', file_path)
                 if delete_after:
@@ -67,24 +71,36 @@ class PackerZip(IPacker):
         elif isinstance(self.data, list):
             self._create_archive_from_files(delete_after)
         else:
-            logger.error(f'{self.__class__.__qualname__} - аргумент data должен быть list или io.BytesIO')
+            logger.error(
+                f'{self.__class__.__qualname__} - аргумент data '
+                f'должен быть list или io.BytesIO'
+            )
             raise ValueError('Аргумент data должен быть list или io.BytesIO')
 
     def create_one_archive_from_parts(self, delete_after=False) -> None:
         """Method not available for zip archive"""
-        logger.error(f'{self.__class__.__qualname__} - Method not available for zip archive')
+        logger.error(
+            f'{self.__class__.__qualname__} - '
+            f'Method not available for zip archive'
+        )
         raise TypeError('Method not available for zip archive')
 
 
 class Packer7z(IPacker):
     def _create_archive_from_buffer(self) -> None:
         """Helper method. Create archive from buffer"""
-        with py7zr.SevenZipFile(file=f'{OUTPUT_DIR}/{self.archive_filename}.7z', mode='w') as archive:
+        with py7zr.SevenZipFile(
+                file=f'{OUTPUT_DIR}/{self.archive_filename}.7z',
+                mode='w'
+        ) as archive:
             archive.writestr(self.data.getvalue(), self.inner_filename)
 
     def _create_archive_from_files(self, delete_after=False) -> None:
         """Helper method. Create archive from files"""
-        with py7zr.SevenZipFile(f'{OUTPUT_DIR}/{self.archive_filename}.7z', 'w') as archive:
+        with py7zr.SevenZipFile(
+                f'{OUTPUT_DIR}/{self.archive_filename}.7z',
+                'w'
+        ) as archive:
             for file_path in self.data:
                 archive.write(f'{self.source_dir}/{file_path}', file_path)
                 if delete_after:
@@ -111,8 +127,13 @@ class Packer7z(IPacker):
                 elif isinstance(self.data, str):
                     archive.write(self.data, '')
                 else:
-                    logger.error(f'{self.__class__.__qualname__} - Argument data must be list or io.BytesIO')
-                    raise ValueError('Argument data must be list or io.BytesIO')
+                    logger.error(
+                        f'{self.__class__.__qualname__} - '
+                        f'Argument data must be list or io.BytesIO'
+                    )
+                    raise ValueError(
+                        'Argument data must be list or io.BytesIO'
+                    )
 
     def create_archive(self, delete_after=False) -> None:
         if isinstance(self.data, io.BytesIO):
@@ -120,12 +141,19 @@ class Packer7z(IPacker):
         elif isinstance(self.data, list):
             self._create_archive_from_files(delete_after)
         else:
-            logger.error(f'{self.__class__.__qualname__} - аргумент data должен быть list или io.BytesIO')
+            logger.error(
+                f'{self.__class__.__qualname__} - '
+                f'аргумент data должен быть list или io.BytesIO'
+            )
             raise ValueError('Аргумент data должен быть list или io.BytesIO')
 
     def create_one_archive_from_parts(self, delete_after=False) -> None:
         part_archive_filename = 'temp.7z'
         self._create_partition(part_archive_filename, self.max_size_mb)
-        self.data = [file for file in os.listdir(self.path_output_files) if file.startswith(part_archive_filename)]
+        self.data = [
+            file
+            for file in os.listdir(self.path_output_files)
+            if file.startswith(part_archive_filename)
+        ]
         self.source_dir = OUTPUT_DIR
         self.create_archive(delete_after=delete_after)

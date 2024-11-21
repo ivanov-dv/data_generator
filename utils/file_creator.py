@@ -11,7 +11,12 @@ from config import TXT_ENCODING, CSV_ENCODING, OUTPUT_DIR
 class IFileCreator(abc.ABC):
     """Interface for creating files."""
 
-    def __init__(self, data: list | Generator, filename: str = None, output_dir = OUTPUT_DIR):
+    def __init__(
+            self,
+            data: list | Generator,
+            filename: str = None,
+            output_dir = OUTPUT_DIR
+    ):
         self.data = data
         self.filename = filename
         self.output_dir = output_dir
@@ -27,7 +32,11 @@ class IFileCreator(abc.ABC):
 
 class ExcelFileCreator(IFileCreator):
     def create(self):
-        output = f'{self.output_dir}/{self.filename}.xlsx' if self.filename else io.BytesIO()
+        output = (
+            f'{self.output_dir}/{self.filename}.xlsx'
+            if self.filename
+            else io.BytesIO()
+        )
         workbook = xlsxwriter.Workbook(output)
         worksheet = workbook.add_worksheet()
 
@@ -45,7 +54,12 @@ class ExcelFileCreator(IFileCreator):
 class CsvFileCreator(IFileCreator):
     def _create_to_file(self):
         """Helper method. Create csv file with random data to file."""
-        with open(f'{self.output_dir}/{self.filename}.csv', 'w', newline='', encoding=CSV_ENCODING) as csvfile:
+        with open(
+                f'{self.output_dir}/{self.filename}.csv',
+                'w',
+                newline='',
+                encoding=CSV_ENCODING
+        ) as csvfile:
             writer = csv.writer(csvfile)
             for row in self.data:
                 writer.writerow(row)
@@ -61,13 +75,21 @@ class CsvFileCreator(IFileCreator):
         return io.BytesIO(output.getvalue().encode('utf-8'))
 
     def create(self):
-        return self._create_to_file() if self.filename else self._create_to_buffer()
+        return (
+            self._create_to_file()
+            if self.filename
+            else self._create_to_buffer()
+        )
 
 
 class TxtFileCreator(IFileCreator):
     def _create_to_file(self):
         """Helper method. Create txt file with random data to file."""
-        with open(f'{self.output_dir}/{self.filename}.txt', 'w', encoding=TXT_ENCODING) as txt_file:
+        with open(
+                f'{self.output_dir}/{self.filename}.txt',
+                'w',
+                encoding=TXT_ENCODING
+        ) as txt_file:
             for row in self.data:
                 txt_file.write(', '.join(map(str, row)) + '\n')
             return f'{self.filename}.txt'
@@ -81,4 +103,8 @@ class TxtFileCreator(IFileCreator):
         return io.BytesIO(output.getvalue().encode('utf-8'))
 
     def create(self):
-        return self._create_to_file() if self.filename else self._create_to_buffer()
+        return (
+            self._create_to_file()
+            if self.filename
+            else self._create_to_buffer()
+        )

@@ -10,7 +10,9 @@ logger.add('logs/errors.log', format='{time} - {name} - {level} - {message}',
 LOG_DIR = 'logs'
 OUTPUT_DIR = 'output'
 INPUT_DIR = 'input'
-DIR_NAMES = [dir_ for var_, dir_  in globals().items() if var_.endswith('_DIR')]
+DIR_NAMES = [
+    dir_ for var_, dir_  in globals().items() if var_.endswith('_DIR')
+]
 
 OUTPUT_FILENAME = 'output'
 INNER_FILENAME = 'output'
